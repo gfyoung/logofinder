@@ -1,0 +1,10 @@
+# MacOS files
+.DS_Store
+
+# IntelliJ files
+.idea
+logofinder.iml
+
+# Python files
+*.pyc
+__pycache__
