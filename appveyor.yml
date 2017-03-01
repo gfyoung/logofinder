@@ -1,0 +1,32 @@
+skip_tags: true
+clone_depth: 1
+
+os: Visual Studio 2015
+
+environment:
+  matrix:
+  - PYTHON_VERSION: 2.7
+    MINICONDA: C:\Miniconda
+  - PYTHON_VERSION: 3.5
+    MINICONDA: C:\Miniconda3
+  - PYTHON_VERSION: 3.6
+    MINICONDA: C:\Miniconda3
+
+platform:
+  - x86
+  - x64
+
+build_script:
+  - df -h
+  - uname -a
+
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+
+  - "conda create -n logofinder python=%PYTHON_VERSION% scrapy flake8 nose Pillow || exit 1"
+  - activate logofinder
+
+test_script:
+  - flake8 --filename=*.py
+  - python testspider.py

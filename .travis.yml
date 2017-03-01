@@ -1,0 +1,32 @@
+notifications:
+  email: false
+
+language: python
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/miniconda3
+
+before_cache:
+  - rm -rf $HOME/miniconda3/envs
+
+env:
+  global:
+    - PATH="$HOME/miniconda3/bin:$PATH"
+  matrix:
+    - PYTHON_VERSION=2.7
+    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.6
+
+before_install:
+  - df -h
+  - uname -a
+  - ci/conda_install.sh
+
+install:
+  - ci/env_install.sh
+
+script:
+  - ci/test_install.sh
