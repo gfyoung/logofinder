@@ -22,7 +22,7 @@ class LogoSpider(scrapy.Spider):
 
     # Link prefixes that would render it invalid
     # for further parsing or following.
-    invalid_prefixes = ["http", "mailto", "javascript"]
+    invalid_prefixes = ["tel", "http", "maito", "mailto", "javascript"]
 
     def __init__(self, start_url, *args, **kwargs):
         """
@@ -36,6 +36,7 @@ class LogoSpider(scrapy.Spider):
         if start_url is None:
             raise ValueError("Starting URL cannot be None")
 
+        self.images = {}
         self.start_url = start_url
         self.classifier = classifier.ImageClassifier(self.model_dir)
 
@@ -70,12 +71,36 @@ class LogoSpider(scrapy.Spider):
             for src in node.xpath("//img/@src").extract():
                 if self.valid_link(src):
                     src = response.urljoin(src)
-                    yield scrapy.Request(src, callback=self.img_parse)
+                    yield scrapy.Request(src, callback=self.store_img)
 
             for href in node.xpath("//a/@href").extract():
                 if self.valid_link(href):
                     href = response.urljoin(href)
                     yield scrapy.Request(href, callback=self.parse)
 
-    def img_parse(self, response):
-        pass
+    def store_img(self, response):
+        """
+        Store the returned image for future processing by our classifier.
+
+        :param response: The website response containing the image.
+        """
+
+        self.images[response.url] = response.body
+
+    def close(self, reason):
+        """
+        Method called when the spider finishes scraping the website.
+
+        Regardless of whether the spider closed out of error or completed
+        successfully, we use whatever images we have found and determine
+        whether any of them could be logos.
+
+        :param reason: The reason that the spider completed.
+        :return: The link corresponding to the logo image, or None.
+        """
+
+        if not self.images.items():
+            return None
+
+        for link, img in self.images.items():
+            print(link)

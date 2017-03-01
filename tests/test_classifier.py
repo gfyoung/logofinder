@@ -68,6 +68,45 @@ class TestLogoSpider(unittest.TestCase):
 
         self.assertGreaterEqual(score, confidence, msg)
 
+    def test_minivan(self):
+        filename = os.path.join(self.IMAGE_DIR, "minivan.jpg")
+        image_data = open(filename, "rb").read()
+
+        human_string, score = self.classifier.classify(image_data)
+        self.assertIn("minivan", human_string,
+                      "Classifier should have seen a minivan")
+
+        confidence = 0.65
+        msg = "Confidence should be at least {pct}".format(pct=confidence)
+
+        self.assertGreaterEqual(score, confidence, msg)
+
+    def test_human_suit(self):
+        filename = os.path.join(self.IMAGE_DIR, "human-suit.jpg")
+        image_data = open(filename, "rb").read()
+
+        human_string, score = self.classifier.classify(image_data)
+        self.assertIn("suit", human_string,
+                      "Classifier should have seen a suit")
+
+        confidence = 0.50
+        msg = "Confidence should be at least {pct}".format(pct=confidence)
+
+        self.assertGreaterEqual(score, confidence, msg)
+
+    def test_dog_painting(self):
+        filename = os.path.join(self.IMAGE_DIR, "dog-painting.jpg")
+        image_data = open(filename, "rb").read()
+
+        human_string, score = self.classifier.classify(image_data)
+        self.assertIn("Rhodesian ridgeback", human_string,
+                      "Classifier should have seen a Rhodesian ridgeback")
+
+        confidence = 0.30
+        msg = "Confidence should be at least {pct}".format(pct=confidence)
+
+        self.assertGreaterEqual(score, confidence, msg)
+
 
 if __name__ == '__main__':
     unittest.main()
