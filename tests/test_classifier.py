@@ -26,15 +26,52 @@ except ImportError as e:
 
 class TestLogoSpider(unittest.TestCase):
 
-    MODEL_DIR = "models"
-
     def setUp(self):
+        directory = os.path.dirname(__file__)
+
+        self.MODEL_DIR = os.path.join(directory, "..", "logofinder", "models")
         self.classifier = classifier.ImageClassifier(self.MODEL_DIR)
 
-    def test_invalid_encoding(self):
-        # Encoding must either be GIF, JPG, or PNG.
-        self.assertRaises(ValueError, self.classifier.classify,
-                          "image_data", "invalid_encoding")
+        self.IMAGE_DIR = os.path.join(directory, "images")
+
+    def test_jpeg(self):
+        filename = os.path.join(self.IMAGE_DIR, "panda.jpg")
+        image_data = open(filename, "rb").read()
+
+        human_string, score = self.classifier.classify(image_data)
+        self.assertIn("panda", human_string,
+                      "Classifier should have seen a panda")
+
+        confidence = 0.85
+        msg = "Confidence should be at least {pct}".format(pct=confidence)
+
+        self.assertGreaterEqual(score, confidence, msg)
+
+    def test_png(self):
+        filename = os.path.join(self.IMAGE_DIR, "panda.png")
+        image_data = open(filename, "rb").read()
+
+        human_string, score = self.classifier.classify(image_data)
+        self.assertIn("panda", human_string,
+                      "Classifier should have seen a panda")
+
+        confidence = 0.85
+        msg = "Confidence should be at least {pct}".format(pct=confidence)
+
+        self.assertGreaterEqual(score, confidence, msg)
+
+    def test_gif(self):
+        filename = os.path.join(self.IMAGE_DIR, "panda.gif")
+        image_data = open(filename, "rb").read()
+
+        human_string, score = self.classifier.classify(image_data)
+        self.assertIn("panda", human_string,
+                      "Classifier should have seen a panda")
+
+        confidence = 0.85
+        msg = "Confidence should be at least {pct}".format(pct=confidence)
+
+        self.assertGreaterEqual(score, confidence, msg)
 
 
 if __name__ == '__main__':

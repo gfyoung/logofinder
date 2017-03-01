@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/gfyoung/statWrappers.svg?branch=master)](https://travis-ci.org/gfyoung/logofinder)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/edjo1iro1numouem?svg=true)](https://ci.appveyor.com/project/gfyoung/logofinder)
-
 # logofinder
 
 Web scraper to find website logos.

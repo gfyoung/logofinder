@@ -8,12 +8,20 @@ https://github.com/tensorflow/models
 """
 
 from __future__ import print_function
+from PIL import Image
 
+import tensorflow as tf
+import numpy as np
 import os.path
 import re
 
-import numpy as np
-import tensorflow as tf
+# For Python 2.x compatibility, BytesIO does
+# not exist, and its closest equivalent is the
+# StringIO class from the StringIO module.
+try:
+    from io import BytesIO
+except ImportError:
+    from StringIO import StringIO as BytesIO
 
 
 class NodeLookup(object):
@@ -100,7 +108,6 @@ class NodeLookup(object):
 class ImageClassifier(object):
 
     GRAPH_DEF = "classify_image_graph_def.pb"
-    ENCODING_TYPES = ["JPEG", "PNG", "GIF"]
 
     def __init__(self, model_dir):
         """
@@ -123,34 +130,26 @@ class ImageClassifier(object):
             graph_def.ParseFromString(f.read())
             tf.import_graph_def(graph_def, name="")
 
-    def classify(self, image_data, encoding=None):
+    def classify(self, image_data):
         """
         Classify provided image data.
 
         :param image_data: Image data that we are to classify. Images that we
                            classify is expected to be encoded (or compressed)
                            in a format like JPEG, PNG, or GIF.
-        :param encoding: The type of encoding (or compression) used on an
-                         image. Accepted values are "JPEG", "PNG", "GIF".
         :return A tuple of the classification and confidence level of
                 the top prediction from the classifier.
         """
 
-        if encoding is not None and encoding not in self.ENCODING_TYPES:
-            raise ValueError("Invalid encoding provided: "
-                             "{encoding}".format(encoding=encoding))
-
         self.create_graph()
 
         with tf.Session() as sess:
-            encoded_image = tf.placeholder(tf.string)
-            decoding_node = tf.image.decode_image(encoded_image)
-            decoded_image = sess.run(decoding_node,
-                                     {encoded_image: image_data})
+            image = Image.open(BytesIO(image_data))
+            image_data = image.convert("RGB")
 
             softmax_tensor = sess.graph.get_tensor_by_name("softmax:0")
             predictions = sess.run(softmax_tensor,
-                                   {"DecodeJpeg:0": decoded_image})
+                                   {"DecodeJpeg:0": image_data})
             predictions = np.squeeze(predictions)
 
             # Creates node ID --> English string lookup.
