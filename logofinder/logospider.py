@@ -3,15 +3,22 @@ Script used for extracting a website logo from a website.
 To use this script, run the following command:
 
 scrapy runspider logospider.py -a start_url=<start_url>
+
+If you would like to restrict the logging output from scrapy
+when running this script you can write the command as follows:
+
+scrapy runspider logospider.py --loglevel=WARNING -a start_url=<start_url>
 """
 
 from scrapy.selector import Selector
 
 import scrapy
+import classifier
 
 
 class LogoSpider(scrapy.Spider):
     name = "logospider"
+    model_dir = "models"
 
     # Link prefixes that would render it invalid
     # for further parsing or following.
@@ -30,6 +37,7 @@ class LogoSpider(scrapy.Spider):
             raise ValueError("Starting URL cannot be None")
 
         self.start_url = start_url
+        self.classifier = classifier.ImageClassifier(self.model_dir)
 
     def start_requests(self):
         """

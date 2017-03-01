@@ -10,10 +10,16 @@ https://github.com/tensorflow/models
 from __future__ import print_function
 from PIL import Image
 
-import tensorflow as tf
 import numpy as np
+import logging
 import os.path
 import re
+
+# We don't want Tensorflow output filling up our output unless
+# it is some error or warning that we should be aware of.
+logging.getLogger("tensorflow").setLevel(logging.WARNING)
+
+import tensorflow as tf  # noqa
 
 # For Python 2.x compatibility, BytesIO does
 # not exist, and its closest equivalent is the

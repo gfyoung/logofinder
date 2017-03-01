@@ -1,12 +1,7 @@
 import os
 import sys
 import nose
-import logging
 import unittest
-
-# We don't want Tensorflow output filling up our test output
-# unless it is some major error that we should be aware of.
-logging.getLogger("tensorflow").setLevel(logging.WARNING)
 
 # For Python 2.x compatibility, unless we install
 # this whole spider directory as a package, Python
