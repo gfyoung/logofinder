@@ -31,7 +31,9 @@ class TestLogoSpider(unittest.TestCase):
 
     def test_jpeg(self):
         filename = os.path.join(self.IMAGE_DIR, "panda.jpg")
-        image_data = open(filename, "rb").read()
+        image_file = open(filename, "rb")
+        image_data = image_file.read()
+        image_file.close()
 
         human_string, score = self.classifier.classify(image_data)
         self.assertIn("panda", human_string,
@@ -44,7 +46,9 @@ class TestLogoSpider(unittest.TestCase):
 
     def test_png(self):
         filename = os.path.join(self.IMAGE_DIR, "panda.png")
-        image_data = open(filename, "rb").read()
+        image_file = open(filename, "rb")
+        image_data = image_file.read()
+        image_file.close()
 
         human_string, score = self.classifier.classify(image_data)
         self.assertIn("panda", human_string,
@@ -57,7 +61,9 @@ class TestLogoSpider(unittest.TestCase):
 
     def test_gif(self):
         filename = os.path.join(self.IMAGE_DIR, "panda.gif")
-        image_data = open(filename, "rb").read()
+        image_file = open(filename, "rb")
+        image_data = image_file.read()
+        image_file.close()
 
         human_string, score = self.classifier.classify(image_data)
         self.assertIn("panda", human_string,
@@ -70,7 +76,9 @@ class TestLogoSpider(unittest.TestCase):
 
     def test_minivan(self):
         filename = os.path.join(self.IMAGE_DIR, "minivan.jpg")
-        image_data = open(filename, "rb").read()
+        image_file = open(filename, "rb")
+        image_data = image_file.read()
+        image_file.close()
 
         human_string, score = self.classifier.classify(image_data)
         self.assertIn("minivan", human_string,
@@ -83,7 +91,9 @@ class TestLogoSpider(unittest.TestCase):
 
     def test_human_suit(self):
         filename = os.path.join(self.IMAGE_DIR, "human-suit.jpg")
-        image_data = open(filename, "rb").read()
+        image_file = open(filename, "rb")
+        image_data = image_file.read()
+        image_file.close()
 
         human_string, score = self.classifier.classify(image_data)
         self.assertIn("suit", human_string,
@@ -96,7 +106,9 @@ class TestLogoSpider(unittest.TestCase):
 
     def test_dog_painting(self):
         filename = os.path.join(self.IMAGE_DIR, "dog-painting.jpg")
-        image_data = open(filename, "rb").read()
+        image_file = open(filename, "rb")
+        image_data = image_file.read()
+        image_file.close()
 
         human_string, score = self.classifier.classify(image_data)
         self.assertIn("Rhodesian ridgeback", human_string,
