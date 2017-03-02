@@ -85,6 +85,16 @@ class LogoSpider(scrapy.Spider):
         :param response: The website response containing the image.
         """
 
+        # From an organizational perspective, it seems more logical to
+        # decouple the actual image processing from the scraping. On the
+        # other hand, it means we have to store these images in memory,
+        # which could be costly if the images were large enough.
+        #
+        # For the ground truth data provided, the images did not consume
+        # too much memory. Thus, this implementation was passable for this
+        # set of data, but in the future, it would be better to somehow
+        # pass along the image data through some pipeline and have another
+        # worker handle the image processing and classification.
         self.images[response.url] = response.body
 
     def close(self, reason):
@@ -103,4 +113,10 @@ class LogoSpider(scrapy.Spider):
             return None
 
         for link, img in self.images.items():
-            print(link)
+            # Ultimately, we would want to combine image classifications
+            # with keywords in the website (e.g. searching the meta tags)
+            # and then find their similarities with the classifications
+            # made on these images to help determine which image is the
+            # website logo or not.
+            label, score = self.classifier.classify(img)
+            yield {"label": label, "score": score, "link": link}
