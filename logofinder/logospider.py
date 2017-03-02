@@ -112,6 +112,8 @@ class LogoSpider(scrapy.Spider):
         if not self.images.items():
             return None
 
+        links = []
+
         for link, img in self.images.items():
             # Ultimately, we would want to combine image classifications
             # with keywords in the website (e.g. searching the meta tags)
@@ -119,4 +121,6 @@ class LogoSpider(scrapy.Spider):
             # made on these images to help determine which image is the
             # website logo or not.
             label, score = self.classifier.classify(img)
-            yield {"label": label, "score": score, "link": link}
+            links.append({"label": label, "score": score, "link": link})
+
+        return links
